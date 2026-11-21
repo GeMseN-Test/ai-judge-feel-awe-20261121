@@ -21,9 +21,13 @@ def main() -> None:
     text = TEXT.strip()
     assert 1 <= len(text) <= 280, f"entry must be 1-280 characters, got {len(text)}"
     assert text.strip(), "entry must not be only whitespace"
+    assert text == TEXT, "entry text must match the written text exactly"
     os.makedirs("/output", exist_ok=True)
     with open("/output/entry.txt", "w", encoding="utf-8") as f:
         f.write(text)
+    # Round-trip check: what landed on disk must be byte-identical.
+    with open("/output/entry.txt", "r", encoding="utf-8") as f:
+        assert f.read() == text, "written entry does not match in-memory text"
 
 
 if __name__ == "__main__":
